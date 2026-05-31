@@ -1,0 +1,129 @@
+<svg viewBox="0 0 560 560" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', monospace">
+  <defs>
+    <style>
+      .bg { fill: #0d1117; }
+      .title { fill: #e6edf3; font-size: 16px; font-weight: bold; }
+      .label { fill: #8b949e; font-size: 11px; }
+      .code { fill: #79c0ff; font-size: 11px; }
+      .desc { fill: #8b949e; font-size: 10.5px; }
+
+      /* Web API box pulse */
+      @keyframes apiPulse {
+        0%,100% { stroke: #30363d; }
+        50%      { stroke: #ffa657; }
+      }
+      .api-box { animation: apiPulse 2s 1s infinite; }
+
+      /* callback moves from Web API → Queue → Stack */
+      @keyframes moveToQueue {
+        0%   { transform: translateX(0)  translateY(0);  opacity: 0; }
+        10%  { opacity: 1; }
+        40%  { transform: translateX(-180px) translateY(80px); opacity: 1; }
+        100% { transform: translateX(-180px) translateY(80px); opacity: 1; }
+      }
+      @keyframes moveToStack {
+        0%,60% { transform: translateX(0) translateY(0); opacity: 0; }
+        70%    { opacity: 1; }
+        100%   { transform: translateX(160px) translateY(-120px); opacity: 1; }
+      }
+
+      .cb-in-queue { animation: moveToQueue 8s 2s infinite; }
+      .cb-in-stack { animation: moveToStack 8s 2s infinite; }
+
+      /* Event loop arrow spin */
+      @keyframes loopSpin {
+        0%   { transform: rotate(0deg);   transform-origin: 280px 250px; }
+        100% { transform: rotate(360deg); transform-origin: 280px 250px; }
+      }
+      .loop-arrow { animation: loopSpin 4s linear infinite; }
+
+      /* stack empty blink */
+      @keyframes stackBlink {
+        0%,100% { fill: #161b22; }
+        50%      { fill: #1a3a2a; }
+      }
+      .stack-empty { animation: stackBlink 2s 1s infinite; }
+    </style>
+  </defs>
+
+  <rect width="560" height="560" class="bg"/>
+
+  <!-- Title -->
+  <text x="20" y="35" class="title" fill="#e6edf3">⏳ Callback Queue (Task Queue)</text>
+  <text x="20" y="52" class="label">How async callbacks wait their turn</text>
+
+  <!-- === WEB APIs BOX === -->
+  <rect x="340" y="70" width="200" height="130" rx="6" fill="#161b22" class="api-box" stroke="#30363d" stroke-width="1.5"/>
+  <text x="352" y="90" fill="#ffa657" font-size="12px" font-weight="bold">🌐 Web APIs</text>
+  <text x="352" y="108" class="label">(browser / Node.js)</text>
+  <text x="352" y="130" class="code">setTimeout(cb, 1000)</text>
+  <text x="352" y="148" class="code">fetch(url).then(cb)</text>
+  <text x="352" y="166" class="code">fs.readFile(path, cb)</text>
+  <text x="352" y="186" class="label">timer / I-O runs here ↓</text>
+
+  <!-- === CALLBACK QUEUE BOX === -->
+  <rect x="20" y="230" width="300" height="90" rx="6" fill="#161b22" stroke="#f78166" stroke-width="1.5"/>
+  <text x="32" y="250" fill="#f78166" font-size="12px" font-weight="bold">📥 Callback Queue  (FIFO)</text>
+  <text x="32" y="270" class="label">ready callbacks wait here</text>
+
+  <!-- animated callback chip in queue -->
+  <g class="cb-in-queue">
+    <rect x="390" y="205" width="110" height="28" rx="4" fill="#3a1f10" stroke="#ffa657" stroke-width="1"/>
+    <text x="400" y="224" class="code" fill="#ffa657">cb() ready</text>
+  </g>
+
+  <!-- === CALL STACK BOX === -->
+  <rect x="340" y="230" width="200" height="130" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+  <text x="352" y="250" fill="#3fb950" font-size="12px" font-weight="bold">📚 Call Stack</text>
+  <text x="352" y="270" class="label">currently executing</text>
+  <rect x="352" y="278" width="176" height="30" rx="4" class="stack-empty" stroke="#30363d" stroke-width="1"/>
+  <text x="362" y="298" class="label">(empty — loop checks queue)</text>
+  <rect x="352" y="314" width="176" height="30" rx="4" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+  <text x="370" y="334" class="label">anonymous global</text>
+
+  <!-- animated callback chip moving to stack -->
+  <g class="cb-in-stack">
+    <rect x="390" y="205" width="110" height="28" rx="4" fill="#1a3a2a" stroke="#3fb950" stroke-width="1"/>
+    <text x="400" y="224" class="code" fill="#3fb950">cb() running</text>
+  </g>
+
+  <!-- === EVENT LOOP === -->
+  <circle cx="200" cy="390" r="46" fill="none" stroke="#d2a8ff" stroke-width="2" stroke-dasharray="8 4"/>
+  <text x="178" y="385" fill="#d2a8ff" font-size="11px" font-weight="bold">Event</text>
+  <text x="180" y="400" fill="#d2a8ff" font-size="11px" font-weight="bold">Loop</text>
+  <text x="160" y="416" fill="#8b949e" font-size="9px">checks stack + queue</text>
+
+  <!-- arrows: Web API → Queue -->
+  <line x1="340" y1="190" x2="260" y2="240" stroke="#ffa657" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-orange)"/>
+  <text x="268" y="222" fill="#ffa657" font-size="10px">① timer done</text>
+
+  <!-- arrows: Queue → Stack (event loop moves it) -->
+  <line x1="322" y1="270" x2="340" y2="278" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-green)"/>
+  <text x="310" y="263" fill="#3fb950" font-size="10px">② push</text>
+
+  <!-- Event loop → Queue check -->
+  <line x1="245" y1="385" x2="320" y2="275" stroke="#d2a8ff" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr-purple)"/>
+  <text x="248" y="335" fill="#d2a8ff" font-size="10px">stack empty?</text>
+  <text x="248" y="348" fill="#d2a8ff" font-size="10px">take next cb</text>
+
+  <defs>
+    <marker id="arr-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#ffa657"/>
+    </marker>
+    <marker id="arr-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3fb950"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#d2a8ff"/>
+    </marker>
+  </defs>
+
+  <!-- Key insight -->
+  <rect x="20" y="455" width="520" height="50" rx="6" fill="#161b22" stroke="#f78166" stroke-width="1"/>
+  <text x="30" y="474" fill="#f78166" font-size="11px">💡 Key Insight</text>
+  <text x="30" y="492" class="desc">Event loop ONLY moves a callback from Queue → Stack when the stack is completely empty.</text>
+
+  <!-- Interview note -->
+  <rect x="20" y="516" width="520" height="34" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="1"/>
+  <text x="30" y="533" fill="#d2a8ff" font-size="11px">🎯 Interview: setTimeout(fn,0) doesn't run immediately — it queues fn; runs after current stack clears.</text>
+</svg>

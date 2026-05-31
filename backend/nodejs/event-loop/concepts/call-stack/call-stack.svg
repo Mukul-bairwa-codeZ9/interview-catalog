@@ -1,0 +1,131 @@
+<svg viewBox="0 0 520 560" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', monospace">
+  <defs>
+    <style>
+      .bg { fill: #0d1117; }
+      .title { fill: #e6edf3; font-size: 16px; font-weight: bold; font-family: 'Courier New', monospace; }
+      .label { fill: #8b949e; font-size: 11px; font-family: 'Courier New', monospace; }
+      .code { fill: #79c0ff; font-size: 11px; font-family: 'Courier New', monospace; }
+      .frame-box { rx: 4; ry: 4; }
+      .arrow { fill: #f78166; }
+      .step-label { fill: #d2a8ff; font-size: 11px; font-family: 'Courier New', monospace; }
+      .stack-label { fill: #3fb950; font-size: 12px; font-weight: bold; font-family: 'Courier New', monospace; }
+      .desc { fill: #8b949e; font-size: 10.5px; font-family: 'Courier New', monospace; }
+
+      /* Frame 1 — only call stack header visible */
+      .f1-main { animation: fadeIn 0s 0s both; }
+      .f1-greet { animation: slideUp 0.4s 1s both; }
+      .f1-say { animation: slideUp 0.4s 2.2s both; }
+      .f1-console { animation: slideUp 0.4s 3.4s both; }
+
+      /* Pop animations */
+      .f1-console-pop { animation: slideUp 0.4s 3.4s both, slideDown 0.4s 4.4s both; }
+      .f1-say-pop    { animation: slideUp 0.4s 2.2s both, slideDown 0.4s 5.6s both; }
+      .f1-greet-pop  { animation: slideUp 0.4s 1s both, slideDown 0.4s 6.8s both; }
+      .f1-main-pop   { animation: fadeIn 0s 0s both, slideDown 0.4s 8s both; }
+
+      /* Step indicator */
+      .step1 { animation: highlightStep 1.2s 1s both; }
+      .step2 { animation: highlightStep 1.2s 2.2s both; }
+      .step3 { animation: highlightStep 1.2s 3.4s both; }
+      .step4 { animation: highlightStep 1.2s 4.4s both; }
+      .step5 { animation: highlightStep 1.2s 5.6s both; }
+      .step6 { animation: highlightStep 1.2s 6.8s both; }
+      .step7 { animation: highlightStep 1.2s 8s both; }
+
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes slideDown {
+        from { opacity: 1; transform: translateY(0); }
+        to   { opacity: 0; transform: translateY(-20px); }
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+      @keyframes highlightStep {
+        0%   { fill: #8b949e; }
+        20%  { fill: #f0e68c; }
+        80%  { fill: #f0e68c; }
+        100% { fill: #8b949e; }
+      }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="520" height="560" class="bg"/>
+
+  <!-- Title -->
+  <text x="20" y="35" class="title">📚 Call Stack</text>
+  <text x="20" y="52" class="label">How JavaScript tracks function execution</text>
+
+  <!-- Code panel -->
+  <rect x="20" y="68" width="220" height="150" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="30" y="86" class="label">// code</text>
+  <text x="30" y="104" class="code">function main() {</text>
+  <text x="30" y="120" class="code">  greet("Mukul");</text>
+  <text x="30" y="136" class="code">}</text>
+  <text x="30" y="154" class="code">function greet(name) {</text>
+  <text x="30" y="170" class="code">  say("Hello " + name);</text>
+  <text x="30" y="186" class="code">}</text>
+  <text x="30" y="204" class="code">function say(msg) {</text>
+  <text x="30" y="218" class="code" dy="0">  console.log(msg); }</text>
+
+  <!-- Stack Panel -->
+  <rect x="260" y="68" width="240" height="280" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="272" y="88" class="stack-label">CALL STACK</text>
+  <text x="272" y="104" class="label">↑ top (currently executing)</text>
+
+  <!-- Stack slot 4 — console.log (pops first) -->
+  <g class="f1-console-pop">
+    <rect x="272" y="195" width="215" height="34" rx="4" fill="#1a3a2a" stroke="#3fb950" stroke-width="1.2"/>
+    <text x="284" y="217" class="code" fill="#3fb950">console.log(msg)</text>
+  </g>
+
+  <!-- Stack slot 3 — say (pops second) -->
+  <g class="f1-say-pop">
+    <rect x="272" y="233" width="215" height="34" rx="4" fill="#1a2f3a" stroke="#79c0ff" stroke-width="1.2"/>
+    <text x="284" y="255" class="code" fill="#79c0ff">say("Hello Mukul")</text>
+  </g>
+
+  <!-- Stack slot 2 — greet (pops third) -->
+  <g class="f1-greet-pop">
+    <rect x="272" y="271" width="215" height="34" rx="4" fill="#2a1f3a" stroke="#d2a8ff" stroke-width="1.2"/>
+    <text x="284" y="293" class="code" fill="#d2a8ff">greet("Mukul")</text>
+  </g>
+
+  <!-- Stack slot 1 — main (pops last) -->
+  <g class="f1-main-pop">
+    <rect x="272" y="309" width="215" height="34" rx="4" fill="#3a2010" stroke="#ffa657" stroke-width="1.2"/>
+    <text x="284" y="331" class="code" fill="#ffa657">main()</text>
+  </g>
+
+  <!-- Stack bottom line -->
+  <line x1="272" y1="348" x2="487" y2="348" stroke="#30363d" stroke-width="2"/>
+  <text x="272" y="364" class="label">↓ bottom (global scope)</text>
+
+  <!-- Steps -->
+  <rect x="20" y="238" width="220" height="110" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="30" y="256" class="label">execution steps:</text>
+  <text x="30" y="275" class="step-label step1">① push main()</text>
+  <text x="30" y="292" class="step-label step2">② push greet("Mukul")</text>
+  <text x="30" y="309" class="step-label step3">③ push say("Hello Mukul")</text>
+  <text x="30" y="326" class="step-label step4">④ push console.log → runs → pop</text>
+  <text x="30" y="343" class="step-label step5">⑤ say() done → pop</text>
+
+  <!-- Key insight box -->
+  <rect x="20" y="370" width="480" height="70" rx="6" fill="#161b22" stroke="#f78166" stroke-width="1"/>
+  <text x="30" y="390" fill="#f78166" font-size="11px" font-family="'Courier New', monospace">💡 Key Insight</text>
+  <text x="30" y="408" class="desc">JS is single-threaded — only ONE function runs at a time.</text>
+  <text x="30" y="424" class="desc">Stack grows when functions are called, shrinks when they return.</text>
+  <text x="30" y="440" class="desc">Stack overflow = too many nested calls (e.g. infinite recursion).</text>
+
+  <!-- Interview note -->
+  <rect x="20" y="455" width="480" height="88" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="1"/>
+  <text x="30" y="474" fill="#d2a8ff" font-size="11px" font-family="'Courier New', monospace">🎯 Interview Answer: "What is the call stack?"</text>
+  <text x="30" y="492" class="desc">The call stack is a LIFO data structure that tracks where JS is in</text>
+  <text x="30" y="508" class="desc">the code. Each function call pushes a frame; returning pops it.</text>
+  <text x="30" y="524" class="desc">JS can only do one thing at a time because it has a single call stack.</text>
+  <text x="30" y="540" class="desc">Async work offloads to Web APIs so the stack stays unblocked.</text>
+</svg>

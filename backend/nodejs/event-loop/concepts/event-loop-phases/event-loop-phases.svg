@@ -1,0 +1,109 @@
+<svg viewBox="0 0 560 600" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', monospace">
+  <defs>
+    <style>
+      .bg { fill: #0d1117; }
+      .label { fill: #8b949e; font-size: 10.5px; }
+      .desc  { fill: #8b949e; font-size: 10px; }
+
+      /* Highlight each phase in sequence */
+      @keyframes ph1 { 0%,100%{fill:#161b22;stroke:#30363d} 5%,20%{fill:#1a3a10;stroke:#3fb950} }
+      @keyframes ph2 { 0%,100%{fill:#161b22;stroke:#30363d} 20%,35%{fill:#1a2f3a;stroke:#79c0ff} }
+      @keyframes ph3 { 0%,100%{fill:#161b22;stroke:#30363d} 35%,50%{fill:#3a2010;stroke:#ffa657} }
+      @keyframes ph4 { 0%,100%{fill:#161b22;stroke:#30363d} 50%,65%{fill:#1a1a3a;stroke:#d2a8ff} }
+      @keyframes ph5 { 0%,100%{fill:#161b22;stroke:#30363d} 65%,80%{fill:#3a1f10;stroke:#f78166} }
+      @keyframes ph6 { 0%,100%{fill:#161b22;stroke:#30363d} 80%,95%{fill:#2a1040;stroke:#f778ba} }
+
+      .phase1 { animation: ph1 8s linear infinite; }
+      .phase2 { animation: ph2 8s linear infinite; }
+      .phase3 { animation: ph3 8s linear infinite; }
+      .phase4 { animation: ph4 8s linear infinite; }
+      .phase5 { animation: ph5 8s linear infinite; }
+      .phase6 { animation: ph6 8s linear infinite; }
+
+      /* spinning indicator dot */
+      @keyframes orbit {
+        from { transform: rotate(0deg)   translate(110px) rotate(0deg);   transform-origin: 280px 265px; }
+        to   { transform: rotate(360deg) translate(110px) rotate(-360deg); transform-origin: 280px 265px; }
+      }
+      .orbit-dot { animation: orbit 8s linear infinite; }
+
+      /* microtask flash between phases */
+      @keyframes microFlash {
+        0%,9%,18%,27%,36%,45%,54%,63%,72%,81%,90%,100% { opacity: 0.2; }
+        10%,19%,28%,37%,46%,55%,64%,73%,82%,91%          { opacity: 1; }
+      }
+      .micro-flash { animation: microFlash 8s linear infinite; }
+    </style>
+    <marker id="arr-w" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#e6edf3"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="600" class="bg"/>
+
+  <!-- Title -->
+  <text x="20" y="35" fill="#e6edf3" font-size="16px" font-weight="bold">🔄 Event Loop Phases (Node.js / libuv)</text>
+  <text x="20" y="52" fill="#8b949e" font-size="11px">The 6 phases the loop cycles through on every tick</text>
+
+  <!-- Center label -->
+  <text x="248" y="258" fill="#e6edf3" font-size="13px" font-weight="bold">Event</text>
+  <text x="252" y="276" fill="#e6edf3" font-size="13px" font-weight="bold">Loop</text>
+  <circle cx="280" cy="265" r="50" fill="none" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- Orbiting dot -->
+  <circle class="orbit-dot" cx="280" cy="155" r="7" fill="#f0e68c"/>
+
+  <!-- === PHASE BOXES arranged in a circle === -->
+
+  <!-- Phase 1: Timers — top -->
+  <rect x="180" y="68" width="200" height="54" rx="6" class="phase1" stroke-width="1.5"/>
+  <text x="193" y="88" fill="#3fb950" font-size="11px" font-weight="bold">① Timers</text>
+  <text x="193" y="104" class="label">setTimeout / setInterval callbacks</text>
+  <text x="193" y="118" class="desc">whose delay has expired</text>
+
+  <!-- Phase 2: Pending I/O — right-top -->
+  <rect x="400" y="148" width="150" height="54" rx="6" class="phase2" stroke-width="1.5"/>
+  <text x="412" y="168" fill="#79c0ff" font-size="11px" font-weight="bold">② Pending I/O</text>
+  <text x="412" y="184" class="label">I/O errors from last tick</text>
+  <text x="412" y="198" class="desc">(rare, mostly TCP errors)</text>
+
+  <!-- Phase 3: Idle/Prepare — right-bottom (internal) -->
+  <rect x="400" y="268" width="150" height="54" rx="6" class="phase3" stroke-width="1.5"/>
+  <text x="412" y="288" fill="#ffa657" font-size="11px" font-weight="bold">③ Idle / Prepare</text>
+  <text x="412" y="304" class="label">internal Node.js use only</text>
+  <text x="412" y="318" class="desc">not relevant to user code</text>
+
+  <!-- Phase 4: Poll — bottom -->
+  <rect x="180" y="372" width="200" height="64" rx="6" class="phase4" stroke-width="1.5"/>
+  <text x="193" y="392" fill="#d2a8ff" font-size="11px" font-weight="bold">④ Poll  ← MOST IMPORTANT</text>
+  <text x="193" y="408" class="label">Retrieve new I/O events.</text>
+  <text x="193" y="422" class="desc">Blocks here if nothing pending</text>
+  <text x="193" y="436" class="desc">(waits for I/O to complete)</text>
+
+  <!-- Phase 5: Check — left-bottom -->
+  <rect x="18" y="268" width="150" height="54" rx="6" class="phase5" stroke-width="1.5"/>
+  <text x="30" y="288" fill="#f78166" font-size="11px" font-weight="bold">⑤ Check</text>
+  <text x="30" y="304" class="label">setImmediate() callbacks</text>
+  <text x="30" y="318" class="desc">run after poll phase</text>
+
+  <!-- Phase 6: Close callbacks — left-top -->
+  <rect x="18" y="148" width="150" height="54" rx="6" class="phase6" stroke-width="1.5"/>
+  <text x="30" y="168" fill="#f778ba" font-size="11px" font-weight="bold">⑥ Close Callbacks</text>
+  <text x="30" y="184" class="label">socket.on('close', ...) etc.</text>
+  <text x="30" y="198" class="desc">cleanup callbacks</text>
+
+  <!-- Microtask reminder banner (flashes between phases) -->
+  <rect x="100" y="452" width="360" height="28" rx="5" fill="#1a0a2a" stroke="#d2a8ff" stroke-width="1.2" class="micro-flash"/>
+  <text x="115" y="471" fill="#d2a8ff" font-size="10.5px">⚡ Microtask queue drains between EVERY phase transition</text>
+
+  <!-- Key insight -->
+  <rect x="20" y="492" width="520" height="56" rx="6" fill="#161b22" stroke="#ffa657" stroke-width="1"/>
+  <text x="30" y="511" fill="#ffa657" font-size="11px">💡 Key Insight — Poll Phase</text>
+  <text x="30" y="529" class="desc">The loop spends most of its life blocked in Poll, waiting for I/O. When an I/O event</text>
+  <text x="30" y="545" class="desc">arrives, the callback is queued and the loop moves forward through the remaining phases.</text>
+
+  <!-- Interview note -->
+  <rect x="20" y="558" width="520" height="34" rx="6" fill="#161b22" stroke="#f78166" stroke-width="1"/>
+  <text x="30" y="575" fill="#f78166" font-size="10.5px">🎯 setImmediate (Check phase) vs setTimeout(fn,0) (Timers phase): order depends on when</text>
+  <text x="30" y="589" fill="#f78166" font-size="10.5px">   they're registered. Inside an I/O callback, setImmediate always runs first.</text>
+</svg>
