@@ -84,6 +84,11 @@ Refresh tokens must be stored server-side (in a database or Redis) to support re
 **Interview Template Answer:**  
 > "Unlike access tokens, refresh tokens need to be stored server-side to be revocable — typically in a database table or Redis with the user ID, token hash, expiry, and a revoked flag. On logout, we delete or flag the token as revoked. On password change or suspected compromise, we revoke all refresh tokens for that user. When a client presents a refresh token, we check the database: is it valid, not expired, and not revoked? This is the one place where auth becomes stateful again, but it's necessary for security. Using Redis for this lookup keeps it fast — sub-millisecond lookups even at scale."
 
+
+## Q6: What happens if refresh token is stolen before use? 
+
+"If an attacker steals a refresh token and uses it before the legitimate user, they will successfully obtain a new access and refresh token pair. However, modern authentication mechanisms handle this using Refresh Token Rotation with Automatic Reuse Detection. >
+The moment the legitimate user's client attempts to use that same, now-compromised refresh token, the authorization server detects a replay attack because the token has been flagged as 'already spent'. Because the server cannot distinguish who is the attacker and who is the victim, it triggers a breach protocol: it immediately invalidates the entire token family, killing the attacker's ability to refresh, and forces a hard logout on the victim client, requiring a clean re-authentication."
 ---
 
 ## Common Follow-up Questions
@@ -95,3 +100,5 @@ Refresh tokens must be stored server-side (in a database or Redis) to support re
 | Should access tokens be stored in DB? | No — they're stateless; only refresh tokens need DB storage |
 | What happens if refresh token is stolen before use? | Attacker gets one rotation, reuse detection should catch it and revoke all |
 | How does "remember me" work? | Longer-lived refresh token (30 days) vs short one (session-only) |
+
+
