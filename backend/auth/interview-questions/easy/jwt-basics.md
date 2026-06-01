@@ -116,6 +116,6 @@ Claims are key-value pairs in the payload. They carry information about the user
 | Question | One-line Answer |
 |---|---|
 | What is the max size of a JWT? | No hard limit, but keep it small — cookies have a 4KB limit and large tokens slow requests |
-| Can you invalidate a JWT? | Not easily — that's the main downside; need a blocklist or short expiry |
+| Can you invalidate a JWT? | Not easily — that's the main downside; need a blacklist or short expiry |
 | What's the difference between JWS and JWE? | JWS = signed (integrity), JWE = encrypted (confidentiality + integrity) |
 | What algorithm should you use? | RS256 for distributed systems, HS256 for single-server; avoid `none` |
