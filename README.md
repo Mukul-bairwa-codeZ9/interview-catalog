@@ -1,5 +1,6 @@
 # 🧠 Interview Catalog
 
+
 > A structured engineering knowledge repository for mastering software engineering interview topics through concepts, visuals, interview-focused Q&A, and production-inspired implementations.
 
 ---
